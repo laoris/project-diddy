@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeniorProject", "SeniorProject\SeniorProject.csproj", "{AC916318-9388-46D8-B956-8A647297006C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeniorProject", "SeniorProject\SeniorProject.csproj", "{48BA8736-7763-4154-B172-09621727E96E}"
 EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
@@ -13,12 +13,12 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AC916318-9388-46D8-B956-8A647297006C}.Debug|x86.ActiveCfg = Debug|x86
-		{AC916318-9388-46D8-B956-8A647297006C}.Debug|x86.Build.0 = Debug|x86
-		{AC916318-9388-46D8-B956-8A647297006C}.Release|x86.ActiveCfg = Release|x86
-		{AC916318-9388-46D8-B956-8A647297006C}.Release|x86.Build.0 = Release|x86
-		{334DCB80-D9B9-4716-A20E-C1E6BE7F0E59}.Debug|x86.ActiveCfg = Debug|x86
-		{334DCB80-D9B9-4716-A20E-C1E6BE7F0E59}.Release|x86.ActiveCfg = Release|x86
+		{48BA8736-7763-4154-B172-09621727E96E}.Debug|x86.ActiveCfg = Debug|x86
+		{48BA8736-7763-4154-B172-09621727E96E}.Debug|x86.Build.0 = Debug|x86
+		{48BA8736-7763-4154-B172-09621727E96E}.Release|x86.ActiveCfg = Release|x86
+		{48BA8736-7763-4154-B172-09621727E96E}.Release|x86.Build.0 = Release|x86
+		{F28FA500-1959-4658-B5FD-894ECA46AD00}.Debug|x86.ActiveCfg = Debug|x86
+		{F28FA500-1959-4658-B5FD-894ECA46AD00}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

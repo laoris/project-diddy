@@ -29,7 +29,6 @@ namespace SeniorProject
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            //sets the window size
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
         }
