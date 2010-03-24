@@ -22,11 +22,11 @@ namespace SeniorProject
         private const float PLAYER_SPEED = 200.0f;              //the speed of the player
 
         //you're a variable
-        public Vector2 position = new Vector2(0, 0);    //The current position of the Sprite in the camera
+        public Vector2 position = new Vector2(0, 0);    //The current position of the Sprite
         public Texture2D texture;   //The texture object used when drawing the sprite
         public int Width;           //the width of the sprite
         public int Height;          //the height of the sprite
-        public Vector2 playerPosition = Vector2.Zero;   //current position of the player in the world
+        public Vector2 playerPosition = Vector2.Zero;   //current position of the player via updates
         public Rectangle playerSourceRectangle;
         public Rectangle spriteRectangle;           //a rectangle around the sprite, used for collisions
         public Boolean collision;       //true if there is any collision
@@ -78,9 +78,7 @@ namespace SeniorProject
         //DRAW THINGS HERE
         public void Draw(SpriteBatch spriteBatch, Camera2D camera)
         {
-            Console.WriteLine(playerPosition);
             position = camera.Transform(playerPosition);
-            Console.WriteLine(position);
             playerSourceRectangle = new Rectangle(0, 0, Width, Height);
 
             //the next 2 lines make it so that the player is centered instead of the top left corner of the sprite being in the center
