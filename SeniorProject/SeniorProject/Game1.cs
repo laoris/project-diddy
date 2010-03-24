@@ -13,89 +13,79 @@ using Microsoft.Xna.Framework.Storage;
 
 namespace SeniorProject
 {
+    /// <summary>
+    /// This is the main type for your game
+    /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        //variables
-        private Player maSprite;        //the player sprite
-        private NPC squareGuySprite;    //the enemy sprite
-        private Background background;  //the background
-        public Camera2D camera;    //the camera object
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-
-            graphics.PreferredBackBufferWidth = 1280;
-            graphics.PreferredBackBufferHeight = 720;
         }
 
-        //INITIALIZE THINGS HERE
+        /// <summary>
+        /// Allows the game to perform any initialization it needs to before starting to run.
+        /// This is where it can query for any required services and load any non-graphic
+        /// related content.  Calling base.Initialize will enumerate through any components
+        /// and initialize them as well.
+        /// </summary>
         protected override void Initialize()
         {
-            maSprite = new Player();    //the player
-            squareGuySprite = new NPC();    //the square guy
-            camera = new Camera2D(graphics, maSprite.playerPosition);    //the camera
-            background = new Background();  //the background
+            // TODO: Add your initialization logic here
 
             base.Initialize();
         }
 
-        //LOAD THINGS HERE
+        /// <summary>
+        /// LoadContent will be called once per game and is the place to load
+        /// all of your content.
+        /// </summary>
         protected override void LoadContent()
         {
-            // TODO: use this.Content to load your game content here
-
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            maSprite.LoadContent(this.Content);                             //load diddy kong sprite
-            squareGuySprite.LoadContent(this.Content, "SquareGuy");         //load square guy sprite
-            background.LoadContent(this.Content);   //load background
+            // TODO: use this.Content to load your game content here
         }
 
-        // UnloadContent will be called once per game and is the place to unload all content.
+        /// <summary>
+        /// UnloadContent will be called once per game and is the place to unload
+        /// all content.
+        /// </summary>
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
         }
 
-        //UPDATE THINGS HERE
+        /// <summary>
+        /// Allows the game to run logic such as updating the world,
+        /// checking for collisions, gathering input, and playing audio.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            //the delta time - super important for updating movement
-            float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            //call the appropriate update methods for each thing
-            camera.Update(gameTime, maSprite.playerPosition);
-            squareGuySprite.Update(gameTime, maSprite);
-            maSprite.Update(gameTime, squareGuySprite);
+            // TODO: Add your update logic here
 
             base.Update(gameTime);
         }
 
-        //DRAW THINGS HERE
+        /// <summary>
+        /// This is called when the game should draw itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            //remember - things are drawn in layers!  later things are drawn on top of earlier things
-            //note - scaling sprites won't scale my collision boxes
-
-            spriteBatch.Begin();
-
-            background.Draw(spriteBatch, camera);       //draw mah new background
-            squareGuySprite.Draw(spriteBatch, camera);  //draw the square guy
-            maSprite.Draw(spriteBatch, camera);         //draw the player
-
-            spriteBatch.End();
+            // TODO: Add your drawing code here
 
             base.Draw(gameTime);
         }
