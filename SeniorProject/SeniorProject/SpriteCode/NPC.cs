@@ -13,7 +13,7 @@ namespace SeniorProject
     class NPC
     {
         //NPCs deserve constants too
-        private const int COLLISION_OFFSET = 7; //the number of pixels to shave off of the collision bounding boxes to make collision smoother
+        private const int COLLISION_OFFSET = 5; //the number of pixels to shave off of the collision bounding boxes to make collision smoother
         private const int NPC_SPEED = 120;      //the movement speed of the NPC - I think this is pixels per second
         private const int AGGRO_RADIUS = 200;   //the aggro radius in pixels
         private const int INIT_X_POS = 1100;    //the initial x position
@@ -158,7 +158,8 @@ namespace SeniorProject
             //this method was made with help from the tutorial http://www.xnaresources.com/pages.asp?pageid=48
 
             needReset = true;       //will reset if de-aggro'd
-            target = otherSprite.position;      //get position of target (player)
+            target.X = otherSprite.position.X - otherSprite.Width;      //get position of target (player)
+            target.Y = otherSprite.position.Y - otherSprite.Height;
 
             if (target != null)
             {
