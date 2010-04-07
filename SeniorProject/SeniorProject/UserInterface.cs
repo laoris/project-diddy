@@ -12,7 +12,6 @@ namespace SeniorProject
 {
     class UserInterface
     {
-        //ankhsvn is stupid
         #region Variables
         private const string UI_FRAME = "UIframe";
         private const string HP_BAR = "HealthBar";
@@ -44,9 +43,9 @@ namespace SeniorProject
         enum State
         {
             On,
-            Off            
+            Off
         }
-        
+
         //LOAD CONTENT HERE
         public void LoadContent(ContentManager theContentManager)
         {
@@ -59,10 +58,13 @@ namespace SeniorProject
         }
 
         //UPDATE THINGS HERE
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Player maSprite)
         {
+            currentHP = maSprite.currentHP;
+            maxHP = maSprite.maxHP;
+
             //updates here
-            maxHP = 150;    //update the maxHP value
+            //maxHP = 150;    //update the maxHP value
             //currentHP = 100;      //update the currentHP value
             HPvalue = currentHP + "/" + maxHP;      //"current/max"
 
@@ -92,7 +94,7 @@ namespace SeniorProject
                     jshift += 162;
                 }
 
-                
+
                 #region reference comments
                 /*
                 //draws the health of the health bar
