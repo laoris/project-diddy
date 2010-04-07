@@ -86,14 +86,13 @@
   <ItemGroup>
     <Compile Include="Background.cs" />
     <Compile Include="Camera2D.cs" />
-    <Compile Include="SpriteCode\Character.cs" />
+    <Compile Include="MenuEntry.cs" />
     <Compile Include="SpriteCode\NPC.cs" />
     <Compile Include="SpriteCode\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="SpriteCode\Sprite.cs" />
-    <Compile Include="SpriteCode\Unit.cs" />
+    <Compile Include="UserInterface.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
