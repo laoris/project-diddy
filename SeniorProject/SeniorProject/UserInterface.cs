@@ -12,6 +12,7 @@ namespace SeniorProject
 {
     class UserInterface
     {
+        //ankhsvn is stupid
         #region Variables
         private const string UI_FRAME = "UIframe";
         private const string HP_BAR = "HealthBar";
