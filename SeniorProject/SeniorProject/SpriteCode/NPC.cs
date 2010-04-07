@@ -12,17 +12,23 @@ namespace SeniorProject
 {
     class NPC
     {
-        //NPCs deserve constants too
-        private const int COLLISION_OFFSET = 5; //the number of pixels to shave off of the collision bounding boxes to make collision smoother
-        private const int NPC_SPEED = 120;      //the movement speed of the NPC - I think this is pixels per second
-        private const int AGGRO_RADIUS = 200;   //the aggro radius in pixels
-        private const int INIT_X_POS = 1100;    //the initial x position
-        private const int INIT_Y_POS = 500;     //the initial y position
+        //constants
+        private const string HP_BAR = "HealthBar";      //the image file for the HP bar
+
+        //variables passed in
+        private int COLLISION_OFFSET;   //the number of pixels to shave off of the collision bounding boxes to make collision smoother
+        private int NPC_SPEED;          //the movement speed of the NPC - I think this is pixels per second
+        private int AGGRO_RADIUS; //the aggro radius in pixels
+        private int INIT_X_POS;   //the initial x position
+        private int INIT_Y_POS;   //the initial y position
+        private string IMAGE_NAME;      //the image file for the sprite
+        private int MAX_HP;             //the dudes max hp
+        private int RESPAWN_TIME;       //the respawn time in seconds
 
         //class variables
         public Vector2 position = new Vector2(0, 0);    //The current position of the Sprite
-        public float positionX = INIT_X_POS;            //the current X position of the sprite
-        public float positionY = INIT_Y_POS;            //the current Y position of the sprite
+        private float positionX;            //the current X position of the sprite
+        private float positionY;            //the current Y position of the sprite
         public Texture2D texture;   //The texture object used when drawing the sprite
         public int Width;           //the width of the sprite
         public int Height;          //the height of the sprite
@@ -36,13 +42,15 @@ namespace SeniorProject
         private Vector2 target = new Vector2(0, 0);     //the location of the target (which will be the player)
         private Boolean needReset = false;          //true if aggro'd on the player, false upon resetting
         private Vector2 sumMoved = new Vector2(0, 0);   //tracks distance moved - used in resetting
-
-        //hp stuff
-        public string nHPvalue;
-        public int ncurrentHP = 90;  //should be used to store the player's current health
-        public int nmaxHP;       //should be used to store the player's max health
-        public Texture2D nhpbar;         //texture for hp
-        private const string nHP_BAR = "HealthBar";
+        public Boolean collision;       //true if there is any collision
+        public Boolean collisionTop = false;       //true if there is collision moving up
+        public Boolean collisionBottom = false;    //true if there is collision moving down
+        public Boolean collisionLeft = false;      //true if there is collision moving left
+        public Boolean collisionRight = false;     //true if there is collision moving right
+        public int currentHP;
+        private float respawnTimeStart = 0;         //tracks the respawn time
+        private Texture2D hpBar;        //texture for HP bar
+        private string hpValue;         //for displaying the hp text
 
         //stores the current NPC state
         enum State
@@ -50,9 +58,10 @@ namespace SeniorProject
             Idle,       //doing nothing
             Patrol,     //patrolling
             Aggro,      //has aggro on the player
-            Reset       //in the process of resetting
+            Reset,      //in the process of resetting
+            Dead        //poor guy
         }
-        State currentState = State.Patrol;      //default state is patrolling
+        State currentState = State.Idle;      //default state is patrolling
         enum Patrol
         {
             Idle1,          //next is WalkingLeft
@@ -62,15 +71,30 @@ namespace SeniorProject
         }
         Patrol patrolState = Patrol.Idle1;     //default state is Idle1
 
-        //LOAD THINGS HERE
-        //parameter assetName = the filename for the sprite image
-        public void LoadContent(ContentManager theContentManager, string assetName)
+        //the constructor for NPCs - this is where all those stats for the particular guy are passed in
+        public NPC(int collisionOffset, int npcSpeed, int aggroRadius, int initX, int initY, string imageName, int hp, int respawnTime)
         {
-            texture = theContentManager.Load<Texture2D>(assetName);
+            COLLISION_OFFSET = collisionOffset;
+            NPC_SPEED = npcSpeed;
+            AGGRO_RADIUS = aggroRadius;
+            INIT_X_POS = initX;
+            INIT_Y_POS = initY;
+            IMAGE_NAME = imageName;
+            MAX_HP = hp;
+            currentHP = MAX_HP;
+            RESPAWN_TIME = respawnTime;
+
+            positionX = INIT_X_POS;
+            positionY = INIT_Y_POS;
+        }
+
+        //LOAD THINGS HERE
+        public void LoadContent(ContentManager theContentManager)
+        {
+            texture = theContentManager.Load<Texture2D>(IMAGE_NAME);
+            hpBar = theContentManager.Load<Texture2D>(HP_BAR);
             Width = texture.Width;
             Height = texture.Height;
-
-            nhpbar = theContentManager.Load<Texture2D>(nHP_BAR);      //loads the hpbar texture
         }
 
         //UPDATE THINGS HERE
@@ -89,23 +113,28 @@ namespace SeniorProject
             aggroBox = new Rectangle((int)position.X - AGGRO_RADIUS, (int)position.Y - AGGRO_RADIUS, texture.Width + (2 * AGGRO_RADIUS), texture.Height + (2 * AGGRO_RADIUS));
 
             //determine the state of the NPC
-            if (aggroBox.Intersects(otherSprite.spriteRectangle))
+            if ((currentHP == 0) || (currentHP < 0))
+            {
+                currentState = State.Dead;
+            }
+            else if (aggroBox.Intersects(otherSprite.spriteRectangle))
             {
                 currentState = State.Aggro;
             }
-            else
+            else if (needReset == true)
             {
-                if (needReset == true)
-                {
-                    currentState = State.Reset;
-                }
-                if (needReset == false)
-                {
-                    currentState = State.Patrol;
-                }
+                currentState = State.Reset;
+            }
+            else if (needReset == false)
+            {
+                currentState = State.Patrol;
             }
 
             //make the NPC patrol left and right
+            if (currentState == State.Dead)
+            {
+                dead(delta);
+            }
             if (currentState == State.Patrol)
             {
                 patrol(gameTime, delta, otherSprite);
@@ -127,12 +156,10 @@ namespace SeniorProject
             positionY = MathHelper.Clamp(positionY, 0, Background.WORLD_HEIGHT - Height);
 
             #region hp stuff
-            nmaxHP = 150;    //update the maxHP value
-            //currentHP = 100;      //update the currentHP value
-            nHPvalue = ncurrentHP + "/" + nmaxHP;      //"current/max"
+            hpValue = currentHP + "/" + MAX_HP;      //"current/max"
 
             //may not need the clamp here
-            ncurrentHP = (int)MathHelper.Clamp(ncurrentHP, 0, nmaxHP); //Keeps the health between 0 and maxHP
+            currentHP = (int)MathHelper.Clamp(currentHP, 0, MAX_HP);    //Keeps the health between 0 and maxHP
             #endregion
         }
 
@@ -141,7 +168,10 @@ namespace SeniorProject
         {
             position = new Vector2(positionX, positionY);
             position = camera.Transform(position);
-            spriteBatch.Draw(texture, position, null, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            if (currentState != State.Dead)
+            {
+                spriteBatch.Draw(texture, position, null, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            }
 
             //draws the empty space for the health bar
             /*
@@ -154,6 +184,78 @@ namespace SeniorProject
                 (int)positionY, (int)(nhpbar.Width * ((double)ncurrentHP / (double)nmaxHP)), 44),
                 new Rectangle(0, 45, nhpbar.Width, 44), Color.Red);
             */
+        }
+
+        //if the NPC is dead...
+        public void dead(float delta)
+        {
+            respawnTimeStart += delta;      //start respawn timer
+            if (respawnTimeStart > RESPAWN_TIME)    //respawn time is up
+            {
+                positionX = INIT_X_POS;
+                positionY = INIT_Y_POS;
+
+                respawnTimeStart = 0;
+                currentHP = MAX_HP;
+                sumMoved.X = 0;
+                sumMoved.Y = 0;
+                needReset = false;
+                currentState = State.Patrol;
+            }
+        }
+
+        //checks if the player is colliding with something
+        public void collisionCheck(Player otherSprite)
+        {
+            if (currentState == State.Dead)     //don't cause collisions if dead
+            {
+                collision = false;
+                collisionBottom = false;
+                collisionLeft = false;
+                collisionRight = false;
+                collisionTop = false;
+                return;
+            }
+            if (spriteRectangleTop.Intersects(otherSprite.spriteRectangle))
+            {
+                collisionBottom = true;
+            }
+            else
+            {
+                collisionBottom = false;
+            }
+            if (spriteRectangleBottom.Intersects(otherSprite.spriteRectangle))
+            {
+                collisionTop = true;
+            }
+            else
+            {
+                collisionTop = false;
+            }
+            if (spriteRectangleLeft.Intersects(otherSprite.spriteRectangle))
+            {
+                collisionRight = true;
+            }
+            else
+            {
+                collisionRight = false;
+            }
+            if (spriteRectangleRight.Intersects(otherSprite.spriteRectangle))
+            {
+                collisionLeft = true;
+            }
+            else
+            {
+                collisionLeft = false;
+            }
+            if ((collisionTop == true) || (collisionBottom == true) || (collisionLeft == true) || (collisionRight == true))
+            {
+                collision = true;
+            }
+            else
+            {
+                collision = false;
+            }
         }
 
         //make the NPC reset
@@ -198,7 +300,7 @@ namespace SeniorProject
 
                 if (aggroDelta.Length() > 1)
                 {
-                    if (otherSprite.collision == false)
+                    if (collision == false)
                     {
                         aggroDelta.Normalize();
                         positionX += aggroDelta.X * NPC_SPEED * delta;
@@ -247,7 +349,7 @@ namespace SeniorProject
                 {
                     stateTimeBegin = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
-                if (((stateTimeEnd - stateTimeBegin) < 5) && (otherSprite.collision == false))
+                if (((stateTimeEnd - stateTimeBegin) < 5) && (collision == false))
                 {
                     //move left
                     positionX -= NPC_SPEED * delta;
@@ -265,7 +367,7 @@ namespace SeniorProject
                 {
                     stateTimeBegin = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
-                if (((stateTimeEnd - stateTimeBegin) < 5) && (otherSprite.collision == false))
+                if (((stateTimeEnd - stateTimeBegin) < 5) && (collision == false))
                 {
                     //move right
                     positionX += NPC_SPEED * delta;
