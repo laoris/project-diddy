@@ -19,11 +19,13 @@ namespace SeniorProject
         SpriteBatch spriteBatch;
 
         //variables
-        private Player maSprite;        //the player sprite
-        private NPC squareGuySprite;    //the enemy sprite
-        private Background background;  //the background
-        private UserInterface bottomBar; //the bottom bar
-        public Camera2D camera;    //the camera object
+        private Player maSprite;            //the player sprite
+        private SquareGuy1 squareGuy1;      //the enemy sprite
+        private SquareGuy2 squareGuy2;      //another enemy sprite
+        private List<NPC> allNPCs;          //a list of all the NPCs
+        private Background background;      //the background
+        private UserInterface bottomBar;    //the bottom bar
+        public Camera2D camera;             //the camera object
 
         public Game1()
         {
@@ -38,10 +40,13 @@ namespace SeniorProject
         //INITIALIZE THINGS HERE
         protected override void Initialize()
         {
-            maSprite = new Player();    //the player
-            squareGuySprite = new NPC();    //the square guy
-            camera = new Camera2D(graphics, maSprite.playerPosition);    //the camera
-            background = new Background();  //the background
+            maSprite = new Player();            //the player
+            squareGuy1 = new SquareGuy1();      //the square guy
+            squareGuy2 = new SquareGuy2();      //another square guy
+            allNPCs = new List<NPC>();
+
+            camera = new Camera2D(graphics, maSprite.playerPosition);
+            background = new Background();
             bottomBar = new UserInterface();
 
             base.Initialize();
@@ -55,9 +60,15 @@ namespace SeniorProject
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            maSprite.LoadContent(this.Content);                             //load diddy kong sprite
-            squareGuySprite.LoadContent(this.Content, "SquareGuy");         //load square guy sprite
-            background.LoadContent(this.Content);   //load background
+            maSprite.LoadContent(this.Content);
+            squareGuy1.LoadContent(this.Content);
+            squareGuy2.LoadContent(this.Content);
+
+            //make mah list of NPCs
+            allNPCs.Add(squareGuy1);
+            allNPCs.Add(squareGuy2);
+
+            background.LoadContent(this.Content);
             bottomBar.LoadContent(this.Content);
         }
 
@@ -74,15 +85,12 @@ namespace SeniorProject
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            //the delta time - super important for updating movement
-            float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
             //call the appropriate update methods for each thing
             camera.Update(gameTime, maSprite.playerPosition);
-            squareGuySprite.Update(gameTime, maSprite);
-            maSprite.Update(gameTime, squareGuySprite);
-            
-            bottomBar.Update(gameTime);//to be updated
+            squareGuy1.Update(gameTime, maSprite);
+            squareGuy2.Update(gameTime, maSprite);
+            maSprite.Update(gameTime, allNPCs);
+            bottomBar.Update(gameTime, maSprite);
 
             base.Update(gameTime);
         }
@@ -93,15 +101,14 @@ namespace SeniorProject
             GraphicsDevice.Clear(Color.Black);
 
             //remember - things are drawn in layers!  later things are drawn on top of earlier things
-            //note - scaling sprites won't scale my collision boxes
 
             spriteBatch.Begin();
 
-            background.Draw(spriteBatch, camera);       //draw mah new background
-            squareGuySprite.Draw(spriteBatch, camera);  //draw the square guy
-            maSprite.Draw(spriteBatch, camera);         //draw the player
-
-            bottomBar.Draw(spriteBatch);                //draw the bottom interface
+            background.Draw(spriteBatch, camera);
+            squareGuy1.Draw(spriteBatch, camera);
+            squareGuy2.Draw(spriteBatch, camera);
+            maSprite.Draw(spriteBatch, camera);
+            bottomBar.Draw(spriteBatch);
 
             spriteBatch.End();
 
