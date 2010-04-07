@@ -22,6 +22,7 @@ namespace SeniorProject
         private Player maSprite;        //the player sprite
         private NPC squareGuySprite;    //the enemy sprite
         private Background background;  //the background
+        private UserInterface bottomBar; //the bottom bar
         public Camera2D camera;    //the camera object
 
         public Game1()
@@ -41,6 +42,7 @@ namespace SeniorProject
             squareGuySprite = new NPC();    //the square guy
             camera = new Camera2D(graphics, maSprite.playerPosition);    //the camera
             background = new Background();  //the background
+            bottomBar = new UserInterface();
 
             base.Initialize();
         }
@@ -56,6 +58,7 @@ namespace SeniorProject
             maSprite.LoadContent(this.Content);                             //load diddy kong sprite
             squareGuySprite.LoadContent(this.Content, "SquareGuy");         //load square guy sprite
             background.LoadContent(this.Content);   //load background
+            bottomBar.LoadContent(this.Content);
         }
 
         // UnloadContent will be called once per game and is the place to unload all content.
@@ -78,6 +81,8 @@ namespace SeniorProject
             camera.Update(gameTime, maSprite.playerPosition);
             squareGuySprite.Update(gameTime, maSprite);
             maSprite.Update(gameTime, squareGuySprite);
+            
+            bottomBar.Update(gameTime);//to be updated
 
             base.Update(gameTime);
         }
@@ -95,6 +100,8 @@ namespace SeniorProject
             background.Draw(spriteBatch, camera);       //draw mah new background
             squareGuySprite.Draw(spriteBatch, camera);  //draw the square guy
             maSprite.Draw(spriteBatch, camera);         //draw the player
+
+            bottomBar.Draw(spriteBatch);                //draw the bottom interface
 
             spriteBatch.End();
 

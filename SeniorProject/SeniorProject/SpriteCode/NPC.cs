@@ -37,6 +37,13 @@ namespace SeniorProject
         private Boolean needReset = false;          //true if aggro'd on the player, false upon resetting
         private Vector2 sumMoved = new Vector2(0, 0);   //tracks distance moved - used in resetting
 
+        //hp stuff
+        public string nHPvalue;
+        public int ncurrentHP = 90;  //should be used to store the player's current health
+        public int nmaxHP;       //should be used to store the player's max health
+        public Texture2D nhpbar;         //texture for hp
+        private const string nHP_BAR = "HealthBar";
+
         //stores the current NPC state
         enum State
         {
@@ -62,6 +69,8 @@ namespace SeniorProject
             texture = theContentManager.Load<Texture2D>(assetName);
             Width = texture.Width;
             Height = texture.Height;
+
+            nhpbar = theContentManager.Load<Texture2D>(nHP_BAR);      //loads the hpbar texture
         }
 
         //UPDATE THINGS HERE
@@ -116,6 +125,15 @@ namespace SeniorProject
             //keeps this sprite in bounds of the world
             positionX = MathHelper.Clamp(positionX, 0, Background.WORLD_WIDTH - Width);
             positionY = MathHelper.Clamp(positionY, 0, Background.WORLD_HEIGHT - Height);
+
+            #region hp stuff
+            nmaxHP = 150;    //update the maxHP value
+            //currentHP = 100;      //update the currentHP value
+            nHPvalue = ncurrentHP + "/" + nmaxHP;      //"current/max"
+
+            //may not need the clamp here
+            ncurrentHP = (int)MathHelper.Clamp(ncurrentHP, 0, nmaxHP); //Keeps the health between 0 and maxHP
+            #endregion
         }
 
         //Draw the sprite to the screen
@@ -124,6 +142,18 @@ namespace SeniorProject
             position = new Vector2(positionX, positionY);
             position = camera.Transform(position);
             spriteBatch.Draw(texture, position, null, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+
+            //draws the empty space for the health bar
+            /*
+            spriteBatch.Draw(nhpbar, new Vector2(positionX, positionY), new Rectangle((int)positionX, (int)positionY - 45, nhpbar.Width, 44),
+                    Color.Red, 0.0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
+            spriteBatch.Draw(nhpbar, new Rectangle((int)positionX / 2 - nhpbar.Width / 2,
+                (int)positionY, nhpbar.Width, 44), new Rectangle(0, 45, nhpbar.Width, 44), Color.LightGray);
+            //draws the current heatlh
+            spriteBatch.Draw(nhpbar, new Rectangle((int)positionX / 2 - nhpbar.Width / 2,
+                (int)positionY, (int)(nhpbar.Width * ((double)ncurrentHP / (double)nmaxHP)), 44),
+                new Rectangle(0, 45, nhpbar.Width, 44), Color.Red);
+            */
         }
 
         //make the NPC reset
