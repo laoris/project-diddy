@@ -6,11 +6,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-//much of the code for this class is based on the tutorials from http://www.xnadevelopment.com/tutorials.shtml
+//some of the code for this class is based on the tutorials from http://www.xnadevelopment.com/tutorials.shtml
 
 namespace SeniorProject
 {
-    class NPC
+    partial class NPC
     {
         //constants
         private const string HP_BAR = "HealthBar";      //the image file for the HP bar
@@ -22,8 +22,13 @@ namespace SeniorProject
         private int INIT_X_POS;   //the initial x position
         private int INIT_Y_POS;   //the initial y position
         private string IMAGE_NAME;      //the image file for the sprite
-        private int MAX_HP;             //the dudes max hp
+        public int MAX_HP;              //the dudes max hp
+        public int MAX_SPIRIT;
         private int RESPAWN_TIME;       //the respawn time in seconds
+        private int ATTACK_RANGE;        //NPC attack range
+        private float ATTACK_COOLDOWN;      //NPC attack cooldown
+        private float STRENGTH;         //NPC strength
+        private int EXPERIENCE;
 
         //class variables
         public Vector2 position = new Vector2(0, 0);    //The current position of the Sprite
@@ -36,6 +41,7 @@ namespace SeniorProject
         public Rectangle spriteRectangleBottom;     //bottom collision box
         public Rectangle spriteRectangleLeft;       //left collision box
         public Rectangle spriteRectangleRight;      //right collision box
+        public Rectangle spriteRectangle;           //box over the sprite
         public Rectangle aggroBox;      //the aggro range of the NPC
         private float stateTimeBegin = 0;           //starts a time interval - used for patrolling
         private float stateTimeEnd = 0;             //ends a time interval - used for patrolling
@@ -47,10 +53,12 @@ namespace SeniorProject
         public Boolean collisionBottom = false;    //true if there is collision moving down
         public Boolean collisionLeft = false;      //true if there is collision moving left
         public Boolean collisionRight = false;     //true if there is collision moving right
-        public int currentHP;
         private float respawnTimeStart = 0;         //tracks the respawn time
         private Texture2D hpBar;        //texture for HP bar
         private string hpValue;         //for displaying the hp text
+        public Color[] npcTextureData;
+        public Boolean alreadyHit = false;
+        public Boolean grantedEXP = false;
 
         //stores the current NPC state
         enum State
@@ -72,7 +80,7 @@ namespace SeniorProject
         Patrol patrolState = Patrol.Idle1;     //default state is Idle1
 
         //the constructor for NPCs - this is where all those stats for the particular guy are passed in
-        public NPC(int collisionOffset, int npcSpeed, int aggroRadius, int initX, int initY, string imageName, int hp, int respawnTime)
+        public NPC(int collisionOffset, int npcSpeed, int aggroRadius, int initX, int initY, string imageName, int hp, int respawnTime, int attackRange, float attackCooldown, float strength, int maxSpirit, int experience)
         {
             COLLISION_OFFSET = collisionOffset;
             NPC_SPEED = npcSpeed;
@@ -82,7 +90,13 @@ namespace SeniorProject
             IMAGE_NAME = imageName;
             MAX_HP = hp;
             currentHP = MAX_HP;
+            MAX_SPIRIT = maxSpirit;
+            currentSpirit = MAX_SPIRIT;
             RESPAWN_TIME = respawnTime;
+            ATTACK_RANGE = attackRange;
+            ATTACK_COOLDOWN = attackCooldown;
+            STRENGTH = strength;
+            EXPERIENCE = experience;
 
             positionX = INIT_X_POS;
             positionY = INIT_Y_POS;
@@ -92,9 +106,12 @@ namespace SeniorProject
         public void LoadContent(ContentManager theContentManager)
         {
             texture = theContentManager.Load<Texture2D>(IMAGE_NAME);
+            attackTexture = theContentManager.Load<Texture2D>(ATTACK_TEXTURE);
             hpBar = theContentManager.Load<Texture2D>(HP_BAR);
             Width = texture.Width;
             Height = texture.Height;
+            npcTextureData = new Color[texture.Width * texture.Height];
+            texture.GetData(npcTextureData);
         }
 
         //UPDATE THINGS HERE
@@ -108,16 +125,19 @@ namespace SeniorProject
             spriteRectangleBottom = new Rectangle((int)position.X + COLLISION_OFFSET, (int)position.Y + texture.Height, texture.Width - (COLLISION_OFFSET * 2), 1);
             spriteRectangleLeft = new Rectangle((int)position.X, (int)position.Y + COLLISION_OFFSET, 1, texture.Height - (COLLISION_OFFSET * 2));
             spriteRectangleRight = new Rectangle((int)position.X + texture.Width, (int)position.Y + COLLISION_OFFSET, 1, texture.Height - (COLLISION_OFFSET * 2));
+            spriteRectangle = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
 
             //create aggro box
             aggroBox = new Rectangle((int)position.X - AGGRO_RADIUS, (int)position.Y - AGGRO_RADIUS, texture.Width + (2 * AGGRO_RADIUS), texture.Height + (2 * AGGRO_RADIUS));
+
+            AggroCheck(delta, otherSprite);
 
             //determine the state of the NPC
             if ((currentHP == 0) || (currentHP < 0))
             {
                 currentState = State.Dead;
             }
-            else if (aggroBox.Intersects(otherSprite.spriteRectangle))
+            else if (aggroCheck == true)
             {
                 currentState = State.Aggro;
             }
@@ -130,23 +150,21 @@ namespace SeniorProject
                 currentState = State.Patrol;
             }
 
-            //make the NPC patrol left and right
+            //do the appropriate thing
             if (currentState == State.Dead)
             {
-                dead(delta);
+                dead(delta, otherSprite);
             }
             if (currentState == State.Patrol)
             {
                 patrol(gameTime, delta, otherSprite);
             }
-            //make the NPC aggro
-            if (currentState == State.Aggro)
+            if (currentState == State.Aggro)    //make the NPC aggro
             {
                 aggro(delta, otherSprite);
+                autoAttack(otherSprite, gameTime);
             }
-
-            //make the NPC reset
-            if (currentState == State.Reset)
+            if (currentState == State.Reset)    //make the NPC reset
             {
                 reset(gameTime, delta, otherSprite);
             }
@@ -154,6 +172,9 @@ namespace SeniorProject
             //keeps this sprite in bounds of the world
             positionX = MathHelper.Clamp(positionX, 0, Background.WORLD_WIDTH - Width);
             positionY = MathHelper.Clamp(positionY, 0, Background.WORLD_HEIGHT - Height);
+
+            HealthRegen(delta);
+            SpiritRegen(delta);
 
             #region hp stuff
             hpValue = currentHP + "/" + MAX_HP;      //"current/max"
@@ -164,7 +185,7 @@ namespace SeniorProject
         }
 
         //Draw the sprite to the screen
-        public void Draw(SpriteBatch spriteBatch, Camera2D camera)
+        public void Draw(SpriteBatch spriteBatch, Camera2D camera, Player maSprite)
         {
             position = new Vector2(positionX, positionY);
             position = camera.Transform(position);
@@ -187,20 +208,32 @@ namespace SeniorProject
         }
 
         //if the NPC is dead...
-        public void dead(float delta)
+        public void dead(float delta, Player otherSprite)
         {
+            damageDisplay = false;
+
+            if (grantedEXP == false)
+            {
+                otherSprite.exp += EXPERIENCE;
+                grantedEXP = true;
+            }
+
             respawnTimeStart += delta;      //start respawn timer
             if (respawnTimeStart > RESPAWN_TIME)    //respawn time is up
             {
                 positionX = INIT_X_POS;
                 positionY = INIT_Y_POS;
 
+                //reset things
                 respawnTimeStart = 0;
                 currentHP = MAX_HP;
+                currentSpirit = MAX_SPIRIT;
                 sumMoved.X = 0;
                 sumMoved.Y = 0;
                 needReset = false;
                 currentState = State.Patrol;
+                damageDisplay = false;
+                grantedEXP = false;
             }
         }
 

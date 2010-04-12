@@ -37,6 +37,13 @@ namespace SeniorProject
         public string mslot5 = "5";
 
         State currentState = State.On;
+
+        private string npcHP;
+        private string npcSpirit;
+        private string playerSpirit;
+        private string level;
+        private string exp;
+        private string strength;
         #endregion
 
         //stores the UI state
@@ -58,10 +65,19 @@ namespace SeniorProject
         }
 
         //UPDATE THINGS HERE
-        public void Update(GameTime gameTime, Player maSprite)
+        public void Update(GameTime gameTime, Player maSprite, NPC npcSprite)
         {
+            //sets the variables to change when things happen to the player
             currentHP = maSprite.currentHP;
             maxHP = maSprite.maxHP;
+
+            //some stuff scott is screwing around with - not permanent
+            npcHP = "NPC HP: " + npcSprite.currentHP + "/" + npcSprite.MAX_HP;
+            npcSpirit = "NPC Spirit: " + npcSprite.currentSpirit + "/" + npcSprite.MAX_SPIRIT;
+            playerSpirit = "Spirit: " + maSprite.currentSpirit + "/" + maSprite.maxSpirit;
+            level = "Level: " + maSprite.level;
+            strength = "Strength: " + maSprite.strength;
+            exp = "EXP: " + maSprite.exp + "/" + maSprite.expNext;
 
             //updates here
             //maxHP = 150;    //update the maxHP value
@@ -114,6 +130,14 @@ namespace SeniorProject
                 spriteBatch.DrawString(hotbarFont, mslot3, new Vector2(635, 628), Color.Black);
                 spriteBatch.DrawString(hotbarFont, mslot4, new Vector2(797, 628), Color.Black);
                 spriteBatch.DrawString(hotbarFont, mslot5, new Vector2(959, 628), Color.Black);
+
+                //again, screwing around, not permanent stuff
+                spriteBatch.DrawString(hotbarFont, npcHP, new Vector2(1090, 610), Color.Black);
+                spriteBatch.DrawString(hotbarFont, npcSpirit, new Vector2(1030, 635), Color.Black);
+                spriteBatch.DrawString(hotbarFont, level, new Vector2(10, 585), Color.Black);
+                spriteBatch.DrawString(hotbarFont, exp, new Vector2(10, 610), Color.Black);
+                spriteBatch.DrawString(hotbarFont, strength, new Vector2(10, 635), Color.Black);
+                spriteBatch.DrawString(hotbarFont, playerSpirit, new Vector2(10, 660), Color.Black);
             }
         }
     }
