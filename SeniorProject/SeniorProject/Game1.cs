@@ -90,7 +90,7 @@ namespace SeniorProject
             squareGuy1.Update(gameTime, maSprite);
             squareGuy2.Update(gameTime, maSprite);
             maSprite.Update(gameTime, allNPCs);
-            bottomBar.Update(gameTime, maSprite);
+            bottomBar.Update(gameTime, maSprite, squareGuy1);
 
             base.Update(gameTime);
         }
@@ -105,9 +105,9 @@ namespace SeniorProject
             spriteBatch.Begin();
 
             background.Draw(spriteBatch, camera);
-            squareGuy1.Draw(spriteBatch, camera);
-            squareGuy2.Draw(spriteBatch, camera);
-            maSprite.Draw(spriteBatch, camera);
+            squareGuy1.Draw(spriteBatch, camera, maSprite);
+            squareGuy2.Draw(spriteBatch, camera, maSprite);
+            maSprite.Draw(spriteBatch, camera, allNPCs);
             bottomBar.Draw(spriteBatch);
 
             spriteBatch.End();

@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SeniorProject
 {
-    class Player
+    partial class Player
     {
         #region Variables
         //constants
@@ -20,7 +20,7 @@ namespace SeniorProject
         private const string WALKING_TEXTURE = "dawnwalking";   //the image file for walking animation - credit to Serg!o from WAH
         private const int PLAYER_START_X = 600;                 //the X coordinate of the vector to spawn the player
         private const int PLAYER_START_Y = 700;                 //the Y coordinate of the vector to spawn the player
-        private const float PLAYER_SPEED = 200.0f;              //the speed of the player
+        private const float PLAYER_SPEED = 170.0f;              //the speed of the player
         private const int WALKING_WIDTH = 40;       //the width of each frame of the walking animation
         private const int WALKING_HEIGHT = 54;      //the height of each frame of the walking animation
         private const int frameCount = 4;           //the number of frames in the sprite sheet for walking
@@ -62,9 +62,6 @@ namespace SeniorProject
         private Rectangle hitBox;               //the attack's actual hit box
         private Vector2 hitBoxVector = new Vector2(0, 0);       //needed for drawing
         private float npcFraction;              //1 divided by the number of NPCs
-        private int autoAttackDamage = 20;      //damage of the auto attack
-        public int maxHP = 150;             //the player's max hp
-        public int currentHP = 140;         //the player's current hp
 
         //some variables for turning
         private float facing = 0; // angle that represents (in bearing) the facing of the unit
@@ -86,6 +83,10 @@ namespace SeniorProject
             texture = theContentManager.Load<Texture2D>(PLAYER_ASSETNAME);
             walkingTexture = theContentManager.Load<Texture2D>(WALKING_TEXTURE);
             textureAttack = theContentManager.Load<Texture2D>(ATTACK_IMAGE);
+            textureSpiritAttack = theContentManager.Load<Texture2D>(SPIRIT_ATTACK_IMAGE);
+            textureElementalBlast = theContentManager.Load<Texture2D>(ELEMENTAL_BLAST_IMAGE);
+            SpiritBlastLoad(theContentManager);
+            ForceWaveLoad(theContentManager);
             Width = texture.Width;
             Height = texture.Height;
             playerPosition = new Vector2(PLAYER_START_X, PLAYER_START_Y); //location to spawn the player
@@ -148,12 +149,38 @@ namespace SeniorProject
                 walking(gameTime);
             }
 
-            //check for action 1 and do it
-            Action1(gameTime, allNPCs);
+            //perform actions
+            if (actionShift1 == false)
+            {
+                Action1(gameTime, allNPCs);     //check for action 1 and do it
+            }
+            if (action1 == false)
+            {
+                ActionShift1(gameTime, allNPCs);     //check for action shift+1 and do it
+            }
+            if (currentSpirit < SPIRIT_ATTACK_COST)      //if the player runs out of spirit, reset the auto spirit attack timer variables
+            {
+                actionShift1 = false;
+                actionCheckerShift1 = 0;
+            }
+
+            //abilities
+            ElementalBlast(delta, allNPCs);
+            SpiritBlast(delta, allNPCs);
+            if (level >= 2)
+            {
+                ForceWave(delta, allNPCs);
+            }
+
+            //regen
+            HealthRegen(delta);      //regen health
+            SpiritRegen(delta);      //regen spirit
+
+            Level();      //determines if you should level up
         }
 
         //DRAW THINGS HERE
-        public void Draw(SpriteBatch spriteBatch, Camera2D camera)
+        public void Draw(SpriteBatch spriteBatch, Camera2D camera, List<NPC> allNPCs)
         {
             position = camera.Transform(playerPosition);
             playerSourceRectangle = new Rectangle(0, 0, Width, Height);
@@ -161,6 +188,10 @@ namespace SeniorProject
             //the next 2 lines make it so that the player is centered instead of the top left corner of the sprite being in the center
             position.X = position.X - (Width / 2);
             position.Y = position.Y - (Height / 2);
+
+            DrawForceWave(spriteBatch);
+            DrawElementalBlast(spriteBatch);
+            DrawSpiritBlast(spriteBatch);
 
             if (currentState == State.Idle)     //draw the idle player
             {
@@ -177,6 +208,20 @@ namespace SeniorProject
             {
                 spriteBatch.Draw(textureAttack, hitBox, attackRect, Color.White);
             }
+
+            if (actionShift1 == true && (cooldownSpiritAttackStart > cooldownEnd))     //draw the animation for action shift+1 - auto spirit attacking
+            {
+                spriteBatch.Draw(textureSpiritAttack, hitBox, attackRect, Color.White);
+            }
+
+            foreach (NPC otherSprite in allNPCs)    //draw the graphic for the player being hit
+            {
+                Vector2 damageTakenPosition = new Vector2(position.X - (Width / 2), position.Y - (Height / 2));
+                if (otherSprite.damageDisplay == true)
+                {
+                    spriteBatch.Draw(otherSprite.attackTexture, damageTakenPosition, Color.White);
+                }
+            }
         }
 
         //check for action 1 and do it - action 1 will probably be reserved for auto attacking as it needs to be toggled
@@ -184,21 +229,26 @@ namespace SeniorProject
         {
             keyboardState = Keyboard.GetState();
             //these if statements are used to properly toggle the action on and off
-            if (keyboardState.IsKeyDown(Keys.D1) && (actionChecker == 0))
+            if (((keyboardState.IsKeyUp(Keys.LeftShift)) && (keyboardState.IsKeyUp(Keys.RightShift))) && keyboardState.IsKeyDown(Keys.D1) && (actionChecker == 0))
             {
                 actionChecker = 1;
             }
-            if (keyboardState.IsKeyUp(Keys.D1) && (actionChecker == 1))
+            if (((keyboardState.IsKeyUp(Keys.LeftShift)) && (keyboardState.IsKeyUp(Keys.RightShift))) && keyboardState.IsKeyUp(Keys.D1) && (actionChecker == 1))
             {
                 actionChecker = 2;
             }
-            if (keyboardState.IsKeyDown(Keys.D1) && (actionChecker == 2))
+            if (((keyboardState.IsKeyUp(Keys.LeftShift)) && (keyboardState.IsKeyUp(Keys.RightShift))) && keyboardState.IsKeyDown(Keys.D1) && (actionChecker == 2))
             {
                 actionChecker = 3;
             }
-            if (keyboardState.IsKeyUp(Keys.D1) && (actionChecker == 3))
+            if (((keyboardState.IsKeyUp(Keys.LeftShift)) && (keyboardState.IsKeyUp(Keys.RightShift))) && keyboardState.IsKeyUp(Keys.D1) && (actionChecker == 3))
             {
                 actionChecker = 0;
+            }
+            if (actionChecker == 0 || actionChecker == 3)       //if auto attacking is cancelled, reset the cooldown and animation
+            {
+                cooldownStart = 0;
+                currentFrameAttack = 0;
             }
             if (actionChecker == 1 || (actionChecker == 2))     //if auto attacking is currently enabled
             {
@@ -220,11 +270,13 @@ namespace SeniorProject
                         //the NPC is in the hitbox
                         foreach (NPC otherSprite in allNPCs)
                         {
-                            if ((hitBox.Intersects(otherSprite.spriteRectangleBottom) == true) || (hitBox.Intersects(otherSprite.spriteRectangleTop) == true) || (hitBox.Intersects(otherSprite.spriteRectangleRight) == true) || (hitBox.Intersects(otherSprite.spriteRectangleLeft) == true))
+                            if(hitBox.Intersects(otherSprite.spriteRectangle) == true)
                             {
                                 if (currentFrameAttack == 2)     //the middle of the animation
                                 {
-                                    otherSprite.currentHP -= autoAttackDamage;
+                                    otherSprite.currentHP -= strength;
+                                    otherSprite.damageAggro = true;
+                                    otherSprite.aggroTimer = 0.0f;
                                 }
                             }
                         }
@@ -245,6 +297,13 @@ namespace SeniorProject
             {
                 action1 = false;
             }
+        }
+
+        //use this to reset the auto attack cooldown and animation
+        public void AttackReset()
+        {
+            cooldownStart = 0.0f;
+            currentFrameAttack = 0;
         }
 
         //animate walking
@@ -269,18 +328,19 @@ namespace SeniorProject
         public void movement(float delta, NPC otherSprite)
         {
             keyboardState = Keyboard.GetState();
-            if ((keyboardState.IsKeyUp(Keys.W)) && (keyboardState.IsKeyUp(Keys.S)) && (keyboardState.IsKeyUp(Keys.E)) && (keyboardState.IsKeyUp(Keys.Q)))
+            if ((keyboardState.IsKeyUp(Keys.W)) && (keyboardState.IsKeyUp(Keys.S)) && (keyboardState.IsKeyUp(Keys.E)) && (keyboardState.IsKeyUp(Keys.Q))
+                && (keyboardState.IsKeyUp(Keys.Up)) && (keyboardState.IsKeyUp(Keys.Down)) && (keyboardState.IsKeyUp(Keys.Left)) && (keyboardState.IsKeyUp(Keys.Right)))
             {
                 currentState = State.Idle;
             }
 
             //LOOK RIGHT:
-            if (keyboardState.IsKeyDown(Keys.D))
+            if ((keyboardState.IsKeyDown(Keys.D)) || (keyboardState.IsKeyDown(Keys.Right)))
             {
                 facing -= turnSpeed * npcFraction;
             }
             //LOOK LEFT
-            if (keyboardState.IsKeyDown(Keys.A))
+            if ((keyboardState.IsKeyDown(Keys.A)) || (keyboardState.IsKeyDown(Keys.Left)))
             {
                 facing += turnSpeed * npcFraction;
             }
@@ -364,45 +424,45 @@ namespace SeniorProject
             }
 
             //MOVE DOWN:
-            if (keyboardState.IsKeyDown(Keys.S))
+            if ((keyboardState.IsKeyDown(Keys.S)) || (keyboardState.IsKeyDown(Keys.Down)))
             {
                 currentState = State.Walking;
                 if (collision == false)
                 {
-                    playerPosition.X += (float)(PLAYER_SPEED * (float)Math.Sin(facing)) * delta * npcFraction;
-                    playerPosition.Y += (float)(PLAYER_SPEED * (float)Math.Cos(facing)) * delta * npcFraction;
+                    playerPosition.X += (float)(PLAYER_SPEED * (float)Math.Sin(facing)) * (delta * 0.65f) * npcFraction;
+                    playerPosition.Y += (float)(PLAYER_SPEED * (float)Math.Cos(facing)) * (delta * 0.65f) * npcFraction;
                 }
                 if (collisionBottom == true)
                 {
                     if ((float)Math.Cos(facing) < 0)
                     {
-                        playerPosition.Y += (float)(PLAYER_SPEED * (float)Math.Cos(facing)) * delta * npcFraction;
+                        playerPosition.Y += (float)(PLAYER_SPEED * (float)Math.Cos(facing)) * (delta * 0.65f) * npcFraction;
                     }
                 }
                 if (collisionTop == true)
                 {
                     if ((float)Math.Cos(facing) > 0)
                     {
-                        playerPosition.Y += (float)(PLAYER_SPEED * (float)Math.Cos(facing)) * delta * npcFraction;
+                        playerPosition.Y += (float)(PLAYER_SPEED * (float)Math.Cos(facing)) * (delta * 0.65f) * npcFraction;
                     }
                 }
                 if (collisionRight == true)
                 {
                     if ((float)Math.Sin(facing) < 0)
                     {
-                        playerPosition.X += (float)(PLAYER_SPEED * (float)Math.Sin(facing)) * delta * npcFraction;
+                        playerPosition.X += (float)(PLAYER_SPEED * (float)Math.Sin(facing)) * (delta * 0.65f) * npcFraction;
                     }
                 }
                 if (collisionLeft == true)
                 {
                     if ((float)Math.Sin(facing) > 0)
                     {
-                        playerPosition.X += (float)(PLAYER_SPEED * (float)Math.Sin(facing)) * delta * npcFraction;
+                        playerPosition.X += (float)(PLAYER_SPEED * (float)Math.Sin(facing)) * (delta * 0.65f) * npcFraction;
                     }
                 }
             }
             //MOVE FORWARD:
-            if (keyboardState.IsKeyDown(Keys.W))
+            if ((keyboardState.IsKeyDown(Keys.W)) || (keyboardState.IsKeyDown(Keys.Up)))
             {
                 currentState = State.Walking;
                 if (collision == false)

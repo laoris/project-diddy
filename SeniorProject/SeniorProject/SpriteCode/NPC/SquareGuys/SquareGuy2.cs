@@ -18,10 +18,15 @@ namespace SeniorProject
         private const int INIT_Y_POS = 200;     //the initial y position
         private const String IMAGE_NAME = "SquareGuy";      //the image file for the sprite
         private const int MAX_HP = 80;              //the dudes hp
+        private const int MAX_SPIRIT = 200;
         private const int RESPAWN_TIME = 10;        //respawn time in seconds
+        private const int ATTACK_RANGE = 65;        //NPC attack range
+        private const float ATTACK_COOLDOWN = 2.0f;     //NPC attack cooldown - time between auto attacks
+        private const float STRENGTH = 10;               //NPC strength - directly related to his damage
+        private const int EXPERIENCE = 10;
 
         public SquareGuy2()
-            : base(COLLISION_OFFSET, NPC_SPEED, AGGRO_RADIUS, INIT_X_POS, INIT_Y_POS, IMAGE_NAME, MAX_HP, RESPAWN_TIME)
+            : base(COLLISION_OFFSET, NPC_SPEED, AGGRO_RADIUS, INIT_X_POS, INIT_Y_POS, IMAGE_NAME, MAX_HP, RESPAWN_TIME, ATTACK_RANGE, ATTACK_COOLDOWN, STRENGTH, MAX_SPIRIT, EXPERIENCE)
         {
 
         }
