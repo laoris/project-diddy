@@ -20,7 +20,7 @@ namespace SeniorProject
 
         private Texture2D textureSpiritAttack;
         private int actionCheckerShift1 = 0;
-        private Boolean actionShift1 = false;
+        public Boolean actionShift1 = false;
         private float cooldownSpiritAttackStart = 0.0f;
         private float timerSpiritAttack = 0.0f;
         private int currentFrameSpiritAttack = 0;             //keeps track of the current frame in the attack animation

@@ -16,7 +16,7 @@ namespace SeniorProject
     class Background
     {
         //constants are so overpowered
-        private const string BG_ASSET_NAME = "earth-map-huge";  //the filename of the background image
+        private const string BG_ASSET_NAME = "shore-map-big";  //the filename of the background image
         private const int BG_POS_X = 0;   //sets the x position where the background is drawn
         private const int BG_POS_Y = 0;   //sets the y position where the background is drawn
         public const int WORLD_WIDTH = 3200;    //width of the world

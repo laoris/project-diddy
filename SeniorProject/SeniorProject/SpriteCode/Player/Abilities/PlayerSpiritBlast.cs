@@ -26,7 +26,7 @@ namespace SeniorProject
         private float spiritBlastFlyTimer = 0.0f;    //tracks projectile time in flight
         private Vector2 spiritBlastLocation = new Vector2(0, 0);     //where the projectile currently is
         private float spiritBlastDirection = 0.0f;
-        private float spiritBlastCooldownTimer = 0.0f;
+        public float spiritBlastCooldownTimer = 0.0f;
         private Rectangle spiritBlastHitBox;
         private Vector2 spiritBlastOrigin = new Vector2(0, 0);
 

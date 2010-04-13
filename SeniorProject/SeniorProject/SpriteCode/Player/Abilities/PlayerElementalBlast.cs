@@ -24,7 +24,7 @@ namespace SeniorProject
         private float elementalBlastFlyTimer = 0.0f;    //tracks projectile time in flight
         private Vector2 elementalBlastLocation = new Vector2(0, 0);     //where the projectile currently is
         private float elementalBlastDirection = 0.0f;
-        private float elementalBlastCooldownTimer = 0.0f;
+        public float elementalBlastCooldownTimer = 0.0f;
         private Rectangle elementalBlastHitBox;
 
         //called from the player class update method
