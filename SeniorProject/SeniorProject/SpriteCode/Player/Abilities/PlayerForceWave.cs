@@ -32,7 +32,7 @@ namespace SeniorProject
         private float forceWaveFlyTimer = 0.0f;    //tracks projectile time in flight
         private Vector2 forceWaveLocation = new Vector2(0, 0);     //where the projectile currently is
         private float forceWaveDirection = 0.0f;
-        private float forceWaveCooldownTimer = 0.0f;
+        public float forceWaveCooldownTimer = 0.0f;
         private Rectangle forceWaveHitBox;
         private int currentFrameForceWave = 0;
         private Rectangle forceWaveRect;    //this is the current frame of the animation to be drawn

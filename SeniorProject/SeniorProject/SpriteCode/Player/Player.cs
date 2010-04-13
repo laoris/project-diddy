@@ -54,7 +54,7 @@ namespace SeniorProject
         private float intervalAttack = 1000f / 10f;     //10 frames per second for animating attack
         private int currentFrameAttack = 0;             //keeps track of the current frame in the attack animation
         public Vector2 origin = new Vector2(0, 0);      //makes the sprite rotate properly
-        private Boolean action1 = false;        //true if action1 is enabled
+        public Boolean action1 = false;        //true if action1 is enabled
         private int actionChecker = 0;          //used for toggling auto attack
         public Texture2D textureAttack;         //The texture object used when drawing the sprite
         private float cooldownEnd = 3.0f;       //attack cooldown - in seconds
