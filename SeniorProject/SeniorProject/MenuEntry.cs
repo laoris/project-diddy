@@ -18,16 +18,18 @@ namespace SeniorProject
         private const string MENU = "Menu";
         private const string ITEM = "Items";
         #endregion
+
+        
         public void LoadContent(ContentManager theContentManager)
         {
            gameFont = theContentManager.Load<SpriteFont>("SpriteFont1");     //loads a font
         }
-
-        public MenuEntry(string text)
+        /*
+       public String MenuEntry(string text)
         {
             this.text = text;
         }
-
+        */
         public virtual void Draw(GameTime gameTime, Vector2 position, SpriteBatch spritebatch, bool isSelected, Color color)
         {
             if (isSelected)

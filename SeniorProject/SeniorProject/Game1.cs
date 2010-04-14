@@ -26,6 +26,7 @@ namespace SeniorProject
         private Background background;      //the background
         private UserInterface bottomBar;    //the bottom bar
         public Camera2D camera;             //the camera object
+        private Menu menu;
 
         public Game1()
         {
@@ -48,6 +49,7 @@ namespace SeniorProject
             camera = new Camera2D(graphics, maSprite.playerPosition);
             background = new Background();
             bottomBar = new UserInterface();
+            menu = new Menu();
 
             base.Initialize();
         }
@@ -70,6 +72,7 @@ namespace SeniorProject
 
             background.LoadContent(this.Content);
             bottomBar.LoadContent(this.Content);
+            menu.LoadContent(this.Content);
         }
 
         // UnloadContent will be called once per game and is the place to unload all content.
@@ -91,6 +94,7 @@ namespace SeniorProject
             squareGuy2.Update(gameTime, maSprite);
             maSprite.Update(gameTime, allNPCs);
             bottomBar.Update(gameTime, maSprite, squareGuy1);
+            menu.Update(gameTime, maSprite);
 
             base.Update(gameTime);
         }
@@ -109,6 +113,7 @@ namespace SeniorProject
             squareGuy2.Draw(spriteBatch, camera, maSprite);
             maSprite.Draw(spriteBatch, camera, allNPCs);
             bottomBar.Draw(spriteBatch);
+            menu.Draw(spriteBatch);
 
             spriteBatch.End();
 
