@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="Background.cs" />
     <Compile Include="Camera2D.cs" />
+    <Compile Include="Menu.cs" />
     <Compile Include="MenuEntry.cs" />
     <Compile Include="SpriteCode\NPC\NPC.cs" />
     <Compile Include="SpriteCode\NPC\NPCattack.cs" />
