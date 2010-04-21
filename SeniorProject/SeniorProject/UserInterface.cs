@@ -27,6 +27,8 @@ namespace SeniorProject
         public Texture2D eblast;
         public Texture2D sblast;
         public Texture2D fwave;
+        public Texture2D vortex;
+        public Texture2D Bspirit;
 
         SpriteFont hpFont;          //font for the hpbar
         SpriteFont hotbarFont;      //font for the hotbar in the bottom middle
@@ -45,12 +47,16 @@ namespace SeniorProject
         public string mslot3 = "J";
         public string mslot4 = "K";
         public string mslot5 = "L";
+        public string mslot6 = ";";
+        public string mslot7 = "U";
 
         private Boolean move1;
         private Boolean move2;
         private float move3;
         private float move4;
         private float move5;
+        private float move6;
+        private float move7;
 
         State currentState = State.On;
 
@@ -82,6 +88,8 @@ namespace SeniorProject
             eblast = theContentManager.Load<Texture2D>("ElementalBlast");
             sblast = theContentManager.Load<Texture2D>("SpiritBlast");
             fwave = theContentManager.Load<Texture2D>("fwave");
+            vortex = theContentManager.Load<Texture2D>("BabyDK2");
+            Bspirit = theContentManager.Load<Texture2D>("BorrowedSpirit");
 
         }
 
@@ -100,6 +108,8 @@ namespace SeniorProject
             move3 = maSprite.elementalBlastCooldownTimer;
             move4 = maSprite.spiritBlastCooldownTimer;
             move5 = maSprite.forceWaveCooldownTimer;
+            move6 = maSprite.vortexCooldownTimer;
+            move7 = maSprite.borrowedSpiritCooldownTimer;
             //in the future move1-5 will be getting whatever ability is assigned to that slot from whereever
             //they would be assigned from, maybe like a movelist class or something
             //right now it is just the boolean of whether the predefined moves are active or not
@@ -136,6 +146,7 @@ namespace SeniorProject
             {
                 spriteBatch.Draw(uitexture, position, Color.White);     //the ui frame
 
+                #region health/spirit bars
                 //draws the empty space for the health bar and spirit bar
                 spriteBatch.Draw(hpbar, new Rectangle(1280 / 2 - hpbar.Width / 2,
                     574, hpbar.Width, 44), new Rectangle(0, 45, hpbar.Width, 44), Color.LightGray);
@@ -147,9 +158,10 @@ namespace SeniorProject
                 spriteBatch.Draw(hpbar, new Rectangle(1280 / 2 - hpbar.Width / 2,
                     596, (int)(hpbar.Width * ((double)currentSpirit / (double)maxSpirit)), 22),
                     new Rectangle(0, 45, hpbar.Width, 22), Color.Blue);
+                #endregion
 
                 #region color coded ability boxes
-                for (int i = 1; i <= 5; i++)
+                for (int i = 1; i <= 7; i++)
                 {
                     //spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White);
 
@@ -178,13 +190,23 @@ namespace SeniorProject
                         if (move5 <= 0.0f && maLevel >= 2) { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White); }
                         else { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red); }
                     }
+                    if (i == 6)
+                    {
+                        if (move6 <= 0.0f && maLevel >= 3) { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White); }
+                        else { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red); }
+                    }
+                    if (i == 7)
+                    {
+                        if (move7 <= 0.0f && maLevel >= 1) { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White); }
+                        else { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red); }
+                    }
 
-                    jshift += 162;
+                    jshift += 115;
                 }
                 #endregion
 
                 #region ability icons drawn to hotbar
-                for (int i = 1; i <= 5; i++)
+                for (int i = 1; i <= 7; i++)
                 {
                     //spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White);
 
@@ -194,22 +216,30 @@ namespace SeniorProject
                     }
                     if (i == 2)
                     {
-                        spriteBatch.Draw(sattack, new Rectangle(406, 630, 80, 80), Color.White);
+                        spriteBatch.Draw(sattack, new Rectangle(359, 630, 80, 80), Color.White);
                     }
                     if (i == 3)
                     {
-                        spriteBatch.Draw(eblast, new Rectangle(568, 630, 80, 80), Color.White);
+                        spriteBatch.Draw(eblast, new Rectangle(474, 630, 80, 80), Color.White);
                     }
                     if (i == 4)
                     {
-                        spriteBatch.Draw(sblast, new Rectangle(730, 630, 80, 80), Color.White);
+                        spriteBatch.Draw(sblast, new Rectangle(589, 630, 80, 80), Color.White);
                     }
                     if (i == 5)
                     {
-                        spriteBatch.Draw(fwave, new Rectangle(892, 630, 80, 80), Color.White);
+                        spriteBatch.Draw(fwave, new Rectangle(704, 630, 80, 80), Color.White);
+                    }
+                    if (i == 6)
+                    {
+                        spriteBatch.Draw(vortex, new Rectangle(819, 630, 80, 80), Color.White);
+                    }
+                    if (i == 7)
+                    {
+                        spriteBatch.Draw(Bspirit, new Rectangle(934, 630, 80, 80), Color.White);
                     }
 
-                    //jshift += 162;
+                    //jshift += 115;
                 }
                 #endregion
 
@@ -230,11 +260,13 @@ namespace SeniorProject
                 //draw fonts to the screen:
                 spriteBatch.DrawString(hpFont, HPvalue, hptextpos, Color.MediumBlue);
                 spriteBatch.DrawString(hpFont, SPvalue, sptextpos, Color.Red);
-                spriteBatch.DrawString(hotbarFont, mslot1, new Vector2(311, 628), Color.Black);
-                spriteBatch.DrawString(hotbarFont, mslot2, new Vector2(464, 628), Color.Black);
-                spriteBatch.DrawString(hotbarFont, mslot3, new Vector2(635, 628), Color.Black);
-                spriteBatch.DrawString(hotbarFont, mslot4, new Vector2(797, 628), Color.Black);
-                spriteBatch.DrawString(hotbarFont, mslot5, new Vector2(959, 628), Color.Black);
+                spriteBatch.DrawString(hotbarFont, mslot1, new Vector2(308, 628), Color.Black);
+                spriteBatch.DrawString(hotbarFont, mslot2, new Vector2(423, 628), Color.Black);
+                spriteBatch.DrawString(hotbarFont, mslot3, new Vector2(538, 628), Color.Black);
+                spriteBatch.DrawString(hotbarFont, mslot4, new Vector2(653, 628), Color.Black);
+                spriteBatch.DrawString(hotbarFont, mslot5, new Vector2(768, 628), Color.Black);
+                spriteBatch.DrawString(hotbarFont, mslot6, new Vector2(883, 628), Color.Black);
+                spriteBatch.DrawString(hotbarFont, mslot7, new Vector2(998, 628), Color.Black);
 
                 //again, screwing around, not permanent stuff
                 spriteBatch.DrawString(hotbarFont, npcHP, new Vector2(1130, 590), Color.Black);
