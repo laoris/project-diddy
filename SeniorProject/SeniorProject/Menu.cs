@@ -32,9 +32,18 @@ namespace SeniorProject
         public Boolean oc = false;
         public Boolean ent = false;
 
+        private string playerSpirit;
+        private string playerHealth;
+        private string level;
+        private string exp;
+        private string strength;
+        private string status;
+        private string otherStuff;
+
         public Vector2 menuVector = new Vector2(580, 180);
 
         public Texture2D menuTexture;
+        public Texture2D dawnprofile;
 
         #endregion
 
@@ -61,6 +70,7 @@ namespace SeniorProject
             gameFont = theContentManager.Load<SpriteFont>("SpriteFont1");       //loads a font
             menuTexture = theContentManager.Load<Texture2D>("mainmenu");        //loads a background for mainmenu
             gameFont2 = theContentManager.Load<SpriteFont>("SpriteFont2");
+            dawnprofile = theContentManager.Load<Texture2D>("dawnport");
         }
 
         public void Update(GameTime gameTime, Player maSprite)
@@ -73,6 +83,13 @@ namespace SeniorProject
                 selectedEntry(gameTime);
 
             }
+
+            playerSpirit = "Spirit: " + maSprite.currentSpirit + "/" + maSprite.maxSpirit;
+            playerHealth = "Health: " + maSprite.currentHP + "/" + maSprite.maxHP;
+            level = "Level: " + maSprite.level;
+            exp = "Experience: " + maSprite.exp + "/" + maSprite.expNext;
+            strength = "Strength: " + maSprite.strength;
+            status = "Status Effects: ";
 
         }
 
@@ -136,11 +153,12 @@ namespace SeniorProject
                 }
                 if (selected == Selections.Char)
                 {
-                    spriteBatch.Draw(menuTexture, new Rectangle(790, 120, 400, 400), Color.White);
+                    spriteBatch.Draw(menuTexture, new Rectangle(790, 120, 480, 400), Color.White);
+                    spriteBatch.Draw(dawnprofile, new Rectangle(815, 132, dawnprofile.Width, dawnprofile.Height), Color.White);
                 }
                 if (selected == Selections.MoveList)
                 {
-                    spriteBatch.Draw(menuTexture, new Rectangle(790, 120, 400, 400), Color.White);
+                    spriteBatch.Draw(menuTexture, new Rectangle(790, 120, 480, 400), Color.White);
                 }
 
             }

@@ -100,11 +100,15 @@ namespace SeniorProject
             move3 = maSprite.elementalBlastCooldownTimer;
             move4 = maSprite.spiritBlastCooldownTimer;
             move5 = maSprite.forceWaveCooldownTimer;
+            //in the future move1-5 will be getting whatever ability is assigned to that slot from whereever
+            //they would be assigned from, maybe like a movelist class or something
+            //right now it is just the boolean of whether the predefined moves are active or not
 
             maLevel = maSprite.level;
 
 
             //some stuff scott is screwing around with - not permanent
+            //let's make some of it permanent to help show what's going on
             npcHP = "NPC HP: " + npcSprite.currentHP + "/" + npcSprite.MAX_HP;
             npcSpirit = "NPC Spirit: " + npcSprite.currentSpirit + "/" + npcSprite.MAX_SPIRIT;
             playerSpirit = "Spirit: " + maSprite.currentSpirit + "/" + maSprite.maxSpirit;
@@ -233,12 +237,13 @@ namespace SeniorProject
                 spriteBatch.DrawString(hotbarFont, mslot5, new Vector2(959, 628), Color.Black);
 
                 //again, screwing around, not permanent stuff
-                spriteBatch.DrawString(hotbarFont, npcHP, new Vector2(1090, 610), Color.Black);
-                spriteBatch.DrawString(hotbarFont, npcSpirit, new Vector2(1030, 635), Color.Black);
+                spriteBatch.DrawString(hotbarFont, npcHP, new Vector2(1130, 590), Color.Black);
+                spriteBatch.DrawString(hotbarFont, npcSpirit, new Vector2(1100, 610), Color.Black);
                 spriteBatch.DrawString(hotbarFont, level, new Vector2(10, 585), Color.Black);
                 spriteBatch.DrawString(hotbarFont, exp, new Vector2(10, 610), Color.Black);
                 spriteBatch.DrawString(hotbarFont, strength, new Vector2(10, 635), Color.Black);
-                spriteBatch.DrawString(hotbarFont, playerSpirit, new Vector2(10, 660), Color.Black);
+                //spriteBatch.DrawString(hotbarFont, playerSpirit, new Vector2(10, 660), Color.Black);
+                spriteBatch.DrawString(hotbarFont, "ESC: opens menu", new Vector2(10, 690), Color.Black);
             }
         }
     }
