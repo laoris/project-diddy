@@ -17,7 +17,6 @@ namespace SeniorProject
         private const string SPIRIT_BLAST_IMAGE = "SpiritBlast";
         private const int SPIRIT_BLAST_SPEED = 350;
         private const float SPIRIT_BLAST_COOLDOWN = 2.0f;
-        private const int SPIRIT_BLAST_SPIRIT_COST = 15;
         private const float SPIRIT_BLAST_FLY_DURATION = 1.0f;    //the time in seconds that the projectile is in air before disappearing
         private const float SPIRIT_BLAST_BASE_DAMAGE = 35.0f;    //base damage of the spell
 
@@ -29,6 +28,8 @@ namespace SeniorProject
         public float spiritBlastCooldownTimer = 0.0f;
         private Rectangle spiritBlastHitBox;
         private Vector2 spiritBlastOrigin = new Vector2(0, 0);
+        private int spiritBlastSpiritCost = 15;
+        private int spiritBlastSpiritCostTemp = 15;
 
         public void SpiritBlastLoad(ContentManager theContentManager)
         {
@@ -40,7 +41,7 @@ namespace SeniorProject
         //called from the player class update method
         public void SpiritBlast(float delta, List<NPC> allNPCs)
         {
-            if (currentSpirit > SPIRIT_BLAST_SPIRIT_COST)   //enough mana
+            if (currentSpirit > spiritBlastSpiritCost)   //enough mana
             {
                 keyboardState = Keyboard.GetState();
                 //these if statements are used to determine when the key is actually pressed and released
@@ -53,7 +54,7 @@ namespace SeniorProject
                     && (spiritBlastFlyTimer == 0) && (spiritBlastCooldownTimer == 0))
                 {
                     actionCheckerK = 2;
-                    currentSpirit -= SPIRIT_BLAST_SPIRIT_COST;   //om nom nom take your spirit
+                    currentSpirit -= spiritBlastSpiritCost;   //om nom nom take your spirit
                     spiritBlastFlyTimer = 0.001f;    //we call this a bunch of hax
                     spiritBlastLocation.X = (int)position.X;
                     spiritBlastLocation.Y = (int)position.Y;
