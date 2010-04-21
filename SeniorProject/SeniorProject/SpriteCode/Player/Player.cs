@@ -62,6 +62,7 @@ namespace SeniorProject
         private Rectangle hitBox;               //the attack's actual hit box
         private Vector2 hitBoxVector = new Vector2(0, 0);       //needed for drawing
         private float npcFraction;              //1 divided by the number of NPCs
+        private Boolean casting = false;        //true if the player is casting
 
         //some variables for turning
         private float facing = 0; // angle that represents (in bearing) the facing of the unit
@@ -87,6 +88,8 @@ namespace SeniorProject
             textureElementalBlast = theContentManager.Load<Texture2D>(ELEMENTAL_BLAST_IMAGE);
             SpiritBlastLoad(theContentManager);
             ForceWaveLoad(theContentManager);
+            VortexLoad(theContentManager);
+            BorrowedSpiritLoad(theContentManager);
             Width = texture.Width;
             Height = texture.Height;
             playerPosition = new Vector2(PLAYER_START_X, PLAYER_START_Y); //location to spawn the player
@@ -158,7 +161,7 @@ namespace SeniorProject
             {
                 ActionShift1(gameTime, allNPCs);     //check for action shift+1 and do it
             }
-            if (currentSpirit < SPIRIT_ATTACK_COST)      //if the player runs out of spirit, reset the auto spirit attack timer variables
+            if (currentSpirit < spiritAttackCost)      //if the player runs out of spirit, reset the auto spirit attack timer variables
             {
                 actionShift1 = false;
                 actionCheckerShift1 = 0;
@@ -171,6 +174,11 @@ namespace SeniorProject
             {
                 ForceWave(delta, allNPCs);
             }
+            if (level >= 3)     //this ability requires level 3
+            {
+                Vortex(delta, allNPCs);
+            }
+            BorrowedSpirit(delta);
 
             //regen
             HealthRegen(delta);      //regen health
@@ -189,6 +197,8 @@ namespace SeniorProject
             position.X = position.X - (Width / 2);
             position.Y = position.Y - (Height / 2);
 
+            DrawVortex(spriteBatch);
+            DrawBorrowedSpirit(spriteBatch);
             DrawForceWave(spriteBatch);
             DrawElementalBlast(spriteBatch);
             DrawSpiritBlast(spriteBatch);

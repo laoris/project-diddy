@@ -19,7 +19,6 @@ namespace SeniorProject
         private const string FORCE_WAVE_IMAGE = "ForceWave2";
         private const int FORCE_WAVE_SPEED = 150;
         private const float FORCE_WAVE_COOLDOWN = 2.0f;
-        private const float FORCE_WAVE_SPIRIT_COST = 20.0f;          //the spirit cost in percentage
         private const float FORCE_WAVE_FLY_DURATION = 0.5f;     //the time in seconds that the projectile is in air before disappearing
         private const float FORCE_WAVE_BASE_DAMAGE = 15.0f;     //base damage of the spell
         private const int frameCountForceWave = 3;
@@ -39,6 +38,8 @@ namespace SeniorProject
         private Vector2 forceWaveOrigin = new Vector2(0, 0);
         private float forceWaveFrameTimer = 0.0f;
         Color[] forceWaveTextureData;
+        private float forceWaveSpiritCost = 20.0f;          //the spirit cost in percentage
+        private float forceWaveSpiritCostTemp = 20.0f;
 
         public void ForceWaveLoad(ContentManager theContentManager)
         {
@@ -67,7 +68,7 @@ namespace SeniorProject
                     && (forceWaveFlyTimer == 0) && (forceWaveCooldownTimer == 0))
                 {
                     actionCheckerL = 2;
-                    currentSpirit -= (int)(currentSpirit * (FORCE_WAVE_SPIRIT_COST / 100));   //om nom nom take your spirit
+                    currentSpirit -= (int)(currentSpirit * (forceWaveSpiritCost / 100));   //om nom nom take your spirit
                     AttackReset();          //reset auto attack if active
                     SpiritAttackReset();    //reset spirit auto attack if active
                     forceWaveFlyTimer = 0.001f;    //we call this a bunch of hax
@@ -88,7 +89,6 @@ namespace SeniorProject
                     (int)forceWaveLocation.Y - (FORCE_WAVE_HEIGHT / 2) - (int)((((Height / 2) + FORCE_WAVE_HEIGHT) / 2) * (float)Math.Cos(forceWaveDirection)), 
                     FORCE_WAVE_HEIGHT,
                     FORCE_WAVE_HEIGHT);
-                Console.WriteLine(forceWaveHitBox);
 
                 //animate
                 forceWaveFrameTimer += delta;

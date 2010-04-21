@@ -15,7 +15,6 @@ namespace SeniorProject
         private const string ELEMENTAL_BLAST_IMAGE = "ElementalBlast";
         private const int ELEMENTAL_BLAST_SPEED = 350;
         private const float ELEMENTAL_BLAST_COOLDOWN = 2.0f;
-        private const int ELEMENTAL_BLAST_SPIRIT_COST = 10;
         private const float ELEMENTAL_BLAST_FLY_DURATION = 1.0f;    //the time in seconds that the projectile is in air before disappearing
         private const float ELEMENTAL_BLAST_BASE_DAMAGE = 30.0f;    //base damage of the spell
 
@@ -26,11 +25,13 @@ namespace SeniorProject
         private float elementalBlastDirection = 0.0f;
         public float elementalBlastCooldownTimer = 0.0f;
         private Rectangle elementalBlastHitBox;
+        private int elementalBlastSpiritCost = 10;
+        private int elementalBlastSpiritCostTemp = 10;
 
         //called from the player class update method
         public void ElementalBlast(float delta, List<NPC> allNPCs)
         {
-            if(currentSpirit >= ELEMENTAL_BLAST_SPIRIT_COST)   //enough mana
+            if(currentSpirit >= elementalBlastSpiritCost)   //enough mana
             {
                 keyboardState = Keyboard.GetState();
                 //these if statements are used to determine when the key is actually pressed and released
@@ -43,7 +44,7 @@ namespace SeniorProject
                     && (elementalBlastFlyTimer == 0) && (elementalBlastCooldownTimer == 0))
                 {
                     actionCheckerJ = 2;
-                    currentSpirit -= ELEMENTAL_BLAST_SPIRIT_COST;   //om nom nom take your spirit
+                    currentSpirit -= elementalBlastSpiritCost;   //om nom nom take your spirit
                     elementalBlastFlyTimer = 0.001f;    //we call this a bunch of hax
                     elementalBlastLocation.X = (int)position.X;
                     elementalBlastLocation.Y = (int)position.Y;

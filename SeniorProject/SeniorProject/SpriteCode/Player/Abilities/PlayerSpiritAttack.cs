@@ -16,7 +16,6 @@ namespace SeniorProject
         //which is an auto attack that does 50% of strength as hp damage and 50% of strength as spirit damage
 
         private const string SPIRIT_ATTACK_IMAGE = "SpiritSword";
-        private const float SPIRIT_ATTACK_COST = 5.0f;      //the spirit cost of each attack of the spirit auto attack
 
         private Texture2D textureSpiritAttack;
         private int actionCheckerShift1 = 0;
@@ -24,11 +23,13 @@ namespace SeniorProject
         private float cooldownSpiritAttackStart = 0.0f;
         private float timerSpiritAttack = 0.0f;
         private int currentFrameSpiritAttack = 0;             //keeps track of the current frame in the attack animation
+        private float spiritAttackCost = 5.0f;      //the spirit cost of each attack of the spirit auto attack
+        private float spiritAttackCostTemp = 5.0f;
 
         //check for action shift+1 and do it - action shift+1 will probably be reserved for spirit auto attacking as it needs to be toggled
         public void ActionShift1(GameTime gameTime, List<NPC> allNPCs)
         {
-            if (currentSpirit > SPIRIT_ATTACK_COST)
+            if (currentSpirit > spiritAttackCost)
             {
                 keyboardState = Keyboard.GetState();
                 //these if statements are used to properly toggle the action on and off
@@ -80,7 +81,7 @@ namespace SeniorProject
                         {
                             if (currentFrameSpiritAttack == 1)
                             {
-                                currentSpirit -= (int)SPIRIT_ATTACK_COST;    //each attack costs 2 spirit
+                                currentSpirit -= (int)spiritAttackCost;    //each attack costs 2 spirit
                             }
                             //the NPC is in the hitbox
                             foreach (NPC otherSprite in allNPCs)
