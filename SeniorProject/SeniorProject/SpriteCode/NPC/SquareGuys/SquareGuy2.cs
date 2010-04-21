@@ -24,9 +24,10 @@ namespace SeniorProject
         private const float ATTACK_COOLDOWN = 2.0f;     //NPC attack cooldown - time between auto attacks
         private const float STRENGTH = 10;               //NPC strength - directly related to his damage
         private const int EXPERIENCE = 10;
+        private const Boolean SPIRIT_ATTACK = false;
 
         public SquareGuy2()
-            : base(COLLISION_OFFSET, NPC_SPEED, AGGRO_RADIUS, INIT_X_POS, INIT_Y_POS, IMAGE_NAME, MAX_HP, RESPAWN_TIME, ATTACK_RANGE, ATTACK_COOLDOWN, STRENGTH, MAX_SPIRIT, EXPERIENCE)
+            : base(COLLISION_OFFSET, NPC_SPEED, AGGRO_RADIUS, INIT_X_POS, INIT_Y_POS, IMAGE_NAME, MAX_HP, RESPAWN_TIME, ATTACK_RANGE, ATTACK_COOLDOWN, STRENGTH, MAX_SPIRIT, EXPERIENCE, SPIRIT_ATTACK)
         {
 
         }
