@@ -31,7 +31,15 @@ namespace SeniorProject
                 if (attackCooldownStart > ATTACK_COOLDOWN)     //attack cooldown is up
                 {
                     damageDisplay = true;
-                    otherSprite.currentHP -= (int)STRENGTH;     //deal damage
+                    if (SPIRIT_ATTACK == true)
+                    {
+                        otherSprite.currentHP -= (int)(STRENGTH / 2);     //deal damage to hp
+                        otherSprite.currentSpirit -= (int)(STRENGTH / 2);     //deal damage to spirit
+                    }
+                    else if (SPIRIT_ATTACK == false)
+                    {
+                        otherSprite.currentHP -= (int)STRENGTH;     //deal damage
+                    }
                     attackCooldownStart = 0.0f;                 //reset cooldown
                 }
             }

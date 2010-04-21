@@ -29,6 +29,7 @@ namespace SeniorProject
         private float ATTACK_COOLDOWN;      //NPC attack cooldown
         private float STRENGTH;         //NPC strength
         private int EXPERIENCE;
+        private Boolean SPIRIT_ATTACK;
 
         //class variables
         public Vector2 position = new Vector2(0, 0);    //The current position of the Sprite
@@ -58,7 +59,9 @@ namespace SeniorProject
         private string hpValue;         //for displaying the hp text
         public Color[] npcTextureData;
         public Boolean alreadyHit = false;
+        public Boolean alreadyHitVortex = false;
         public Boolean grantedEXP = false;
+        private Loot mahNewLoot = new Loot();
 
         //stores the current NPC state
         enum State
@@ -80,7 +83,7 @@ namespace SeniorProject
         Patrol patrolState = Patrol.Idle1;     //default state is Idle1
 
         //the constructor for NPCs - this is where all those stats for the particular guy are passed in
-        public NPC(int collisionOffset, int npcSpeed, int aggroRadius, int initX, int initY, string imageName, int hp, int respawnTime, int attackRange, float attackCooldown, float strength, int maxSpirit, int experience)
+        public NPC(int collisionOffset, int npcSpeed, int aggroRadius, int initX, int initY, string imageName, int hp, int respawnTime, int attackRange, float attackCooldown, float strength, int maxSpirit, int experience, Boolean spiritAttack)
         {
             COLLISION_OFFSET = collisionOffset;
             NPC_SPEED = npcSpeed;
@@ -97,6 +100,7 @@ namespace SeniorProject
             ATTACK_COOLDOWN = attackCooldown;
             STRENGTH = strength;
             EXPERIENCE = experience;
+            SPIRIT_ATTACK = spiritAttack;
 
             positionX = INIT_X_POS;
             positionY = INIT_Y_POS;
@@ -112,6 +116,7 @@ namespace SeniorProject
             Height = texture.Height;
             npcTextureData = new Color[texture.Width * texture.Height];
             texture.GetData(npcTextureData);
+            mahNewLoot.LootLoad(theContentManager);
         }
 
         //UPDATE THINGS HERE
@@ -133,7 +138,7 @@ namespace SeniorProject
             AggroCheck(delta, otherSprite);
 
             //determine the state of the NPC
-            if ((currentHP == 0) || (currentHP < 0))
+            if ((currentHP == 0) || (currentHP < 0) || (currentSpirit == 0) || (currentSpirit < 0))
             {
                 currentState = State.Dead;
             }
@@ -194,6 +199,8 @@ namespace SeniorProject
                 spriteBatch.Draw(texture, position, null, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             }
 
+            //mahNewLoot.DrawLoot(spriteBatch, camera);
+
             //draws the empty space for the health bar
             /*
             spriteBatch.Draw(nhpbar, new Vector2(positionX, positionY), new Rectangle((int)positionX, (int)positionY - 45, nhpbar.Width, 44),
@@ -211,6 +218,8 @@ namespace SeniorProject
         public void dead(float delta, Player otherSprite)
         {
             damageDisplay = false;
+
+            //mahNewLoot.LootUpdate(delta);
 
             if (grantedEXP == false)
             {
@@ -234,6 +243,7 @@ namespace SeniorProject
                 currentState = State.Patrol;
                 damageDisplay = false;
                 grantedEXP = false;
+                mahNewLoot.spawnedLoot = false;
             }
         }
 
