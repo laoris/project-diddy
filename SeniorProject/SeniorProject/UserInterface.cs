@@ -53,10 +53,21 @@ namespace SeniorProject
         private Boolean move1;
         private Boolean move2;
         private float move3;
+        private float move3a;
         private float move4;
+        private float move4a;
         private float move5;
+        private float move5a;
         private float move6;
+        private float move6a;
+        private float move6b;
+        private float move6c;
+        private int move6d;
         private float move7;
+        private float move7a;
+        private Boolean move7b;
+        private float move7c;
+        private float move7d;
 
         State currentState = State.On;
 
@@ -106,10 +117,21 @@ namespace SeniorProject
             move1 = maSprite.action1;
             move2 = maSprite.actionShift1;
             move3 = maSprite.elementalBlastCooldownTimer;
+            move3a = maSprite.ELEMENTAL_BLAST_COOLDOWN;
             move4 = maSprite.spiritBlastCooldownTimer;
+            move4a = maSprite.SPIRIT_BLAST_COOLDOWN;
             move5 = maSprite.forceWaveCooldownTimer;
-            move6 = maSprite.vortexCooldownTimer;
+            move5a = maSprite.FORCE_WAVE_COOLDOWN;
+            move6 = maSprite.vortexFrameTimer;
+            move6a = maSprite.VORTEX_COOLDOWN;
+            move6b = maSprite.vortexCastTimer;
+            move6c = maSprite.VORTEX_CAST_TIME;
+            move6d = maSprite.actionCheckerSemicolon;
             move7 = maSprite.borrowedSpiritCooldownTimer;
+            move7a = maSprite.BORROWED_SPIRIT_COOLDOWN;
+            move7b = maSprite.borrowedSpiritActive;
+            move7c = maSprite.borrowedSpiritTimer;
+            move7d = maSprite.BORROWED_SPIRIT_DURATION;
             //in the future move1-5 will be getting whatever ability is assigned to that slot from whereever
             //they would be assigned from, maybe like a movelist class or something
             //right now it is just the boolean of whether the predefined moves are active or not
@@ -167,38 +189,85 @@ namespace SeniorProject
 
                     if (i == 1)
                     {
-                        if (move1) { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White); }
-                        else { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red); }
+                        //if (move2) { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red); }
+                        if (move1) { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.LightGreen); }
+                        else 
+                        { 
+                            spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White); 
+                            
+                        }
                     }
                     if (i == 2)
                     {
-                        if (move2) { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White); }
-                        else { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red); }
+                        if (move1) { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red); }
+                        else if (move2) 
+                        { 
+                            spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.LightGreen);
+                            spriteBatch.Draw(movebox, new Vector2(jshift-115, 626), Color.Red);
+                        }
+                        else { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White); }
                     }
                     if (i == 3)
                     {
                         if (move3 <= 0.0f) { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White); }
-                        else { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red); }
+                        else
+                        { 
+                            spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red);
+                            spriteBatch.Draw(movebox, new Rectangle(jshift+5, 631, movebox.Width-10, (int)(movebox.Height * ((double)move3 / (double)move3a)) -5),
+                            new Rectangle(6, 6, 78, 78), Color.White);
+                        }
                     }
                     if (i == 4)
                     {
                         if (move4 <= 0.0f) { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White); }
-                        else { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red); }
+                        else 
+                        { 
+                            spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red);
+                            spriteBatch.Draw(movebox, new Rectangle(jshift + 5, 631, movebox.Width - 10, (int)(movebox.Height * ((double)move4 / (double)move4a)) - 5),
+                            new Rectangle(6, 6, 78, 78), Color.White);
+                        }
                     }
                     if (i == 5)
                     {
                         if (move5 <= 0.0f && maLevel >= 2) { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White); }
-                        else { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red); }
+                        else 
+                        {
+                            spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red);
+                            spriteBatch.Draw(movebox, new Rectangle(jshift + 5, 631, movebox.Width - 10, (int)(movebox.Height * ((double)move5 / (double)move5a)) - 5),
+                            new Rectangle(6, 6, 78, 78), Color.White);
+                        }
                     }
                     if (i == 6)
                     {
-                        if (move6 <= 0.0f && maLevel >= 3) { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White); }
-                        else { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red); }
+                        if (move6b <= 0.0f && maLevel >= 3 && move6 == 0) { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White); }
+
+                        else if (move6b > 0.0f)
+                        {
+                            spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.LightGreen);
+                            spriteBatch.Draw(movebox, new Rectangle(jshift + 5, 631, movebox.Width - 10, (int)(movebox.Height * ((double)move6b / (double)move6c)) - 5),
+                            new Rectangle(6, 6, 78, 78), Color.White);
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red);
+                        }
+                    
                     }
                     if (i == 7)
                     {
-                        if (move7 <= 0.0f && maLevel >= 1) { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White); }
-                        else { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red); }
+                        if (move7 <= 0.0f && maLevel >= 1 && move7b == false) { spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.White); }
+                        else if (move7b == true)
+                        {
+                            spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.LightGreen);
+                            spriteBatch.Draw(movebox, new Rectangle(jshift + 5, 631, movebox.Width - 10, (int)(movebox.Height * ((double)move7c / (double)move7d)) - 5),
+                            new Rectangle(6, 6, 78, 78), Color.White);
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(movebox, new Vector2(jshift, 626), Color.Red);
+                            spriteBatch.Draw(movebox, new Rectangle(jshift + 5, 631, movebox.Width - 10, (int)(movebox.Height * ((double)move7 / (double)move7a)) - 5),
+                            new Rectangle(6, 6, 78, 78), Color.White);
+                        }
                     }
 
                     jshift += 115;

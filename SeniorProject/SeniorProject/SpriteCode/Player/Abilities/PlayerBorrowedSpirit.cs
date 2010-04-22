@@ -18,14 +18,14 @@ namespace SeniorProject
         //other abilities also cost no spirit while this is active
 
         private const string BORROWED_SPIRIT_IMAGE = "BorrowedSpirit";
-        private const float BORROWED_SPIRIT_COOLDOWN = 30.0f;
-        private const float BORROWED_SPIRIT_DURATION = 5.0f;     //the time in seconds that the projectile is in air before disappearing
+        public float BORROWED_SPIRIT_COOLDOWN = 30.0f;
+        public float BORROWED_SPIRIT_DURATION = 5.0f;     //the time in seconds that the projectile is in air before disappearing
         private const int BORROWED_SPIRIT_FRAME_COUNT = 8;
         private const float BORROWED_SPIRIT_FRAME_RATE = 1.0f / 12;     //12 frames per second for the animation
 
         private int actionCheckerU = 0;             //this guy tracks what step we are on in the process
         private Texture2D textureBorrowedSpirit;
-        private float borrowedSpiritTimer = 0.0f;    //tracks duration
+        public float borrowedSpiritTimer = 0.0f;    //tracks duration
         private Rectangle borrowedSpiritLocation;     //where the projectile currently is
         public float borrowedSpiritCooldownTimer = 0.0f;    //tracks cooldown
         private int borrowedSpiritCurrentFrame = 0;

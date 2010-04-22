@@ -18,7 +18,7 @@ namespace SeniorProject
 
         private const string FORCE_WAVE_IMAGE = "ForceWave2";
         private const int FORCE_WAVE_SPEED = 150;
-        private const float FORCE_WAVE_COOLDOWN = 2.0f;
+        public float FORCE_WAVE_COOLDOWN = 2.0f;
         private const float FORCE_WAVE_FLY_DURATION = 0.5f;     //the time in seconds that the projectile is in air before disappearing
         private const float FORCE_WAVE_BASE_DAMAGE = 15.0f;     //base damage of the spell
         private const int frameCountForceWave = 3;

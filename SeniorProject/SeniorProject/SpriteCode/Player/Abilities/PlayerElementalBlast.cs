@@ -14,7 +14,7 @@ namespace SeniorProject
     {
         private const string ELEMENTAL_BLAST_IMAGE = "ElementalBlast";
         private const int ELEMENTAL_BLAST_SPEED = 350;
-        private const float ELEMENTAL_BLAST_COOLDOWN = 2.0f;
+        public float ELEMENTAL_BLAST_COOLDOWN = 2.0f;
         private const float ELEMENTAL_BLAST_FLY_DURATION = 1.0f;    //the time in seconds that the projectile is in air before disappearing
         private const float ELEMENTAL_BLAST_BASE_DAMAGE = 30.0f;    //base damage of the spell
 

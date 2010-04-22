@@ -17,16 +17,16 @@ namespace SeniorProject
         //it does more damage based on the player having more spirit
 
         private const string VORTEX_IMAGE = "vortex";
-        private const float VORTEX_COOLDOWN = 2.0f;
-        private const float VORTEX_DURATION = 0.5f;     //the time in seconds that the projectile is in air before disappearing
+        public float VORTEX_COOLDOWN = 2.0f;
+        public float VORTEX_DURATION = 0.5f;     //the time in seconds that the projectile is in air before disappearing
         private const float VORTEX_BASE_DAMAGE = 0.5f;     //it does this much damage for each 1% of spirit the player has
         private const int VORTEX_FRAME_COUNT = 8;
         private const int VORTEX_WIDTH = 70;
         private const int VORTEX_HEIGHT = 75;
         private const float VORTEX_FRAME_RATE = 1.0f / 12;     //12 frames per second for the animation
-        private const float VORTEX_CAST_TIME = 2.0f;       //time to cast the spell
+        public float VORTEX_CAST_TIME = 2.0f;       //time to cast the spell
 
-        private int actionCheckerSemicolon = 0;             //this guy tracks what step we are on in the process
+        public int actionCheckerSemicolon = 0;             //this guy tracks what step we are on in the process
         private Texture2D textureVortex;
         private float vortexTimer = 0.0f;    //tracks projectile time in flight
         private Vector2 vortexLocation = new Vector2(0, 0);     //where the projectile currently is
@@ -34,8 +34,8 @@ namespace SeniorProject
         private Rectangle vortexHitBox;
         private int vortexCurrentFrame = 0;
         private Rectangle vortexRect;    //this is the current frame of the animation to be drawn
-        private float vortexFrameTimer = 0.0f;
-        private float vortexCastTimer = 0.0f;     //tracks the time for casting
+        public float vortexFrameTimer = 0.0f;
+        public float vortexCastTimer = 0.0f;     //tracks the time for casting
         private float vortexSpiritCost = 20.0f;          //the spirit cost
         private float vortexSpiritCostTemp = 20.0f;
 
