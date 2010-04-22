@@ -16,7 +16,7 @@ namespace SeniorProject
 
         private const string SPIRIT_BLAST_IMAGE = "SpiritBlast";
         private const int SPIRIT_BLAST_SPEED = 350;
-        private const float SPIRIT_BLAST_COOLDOWN = 2.0f;
+        public float SPIRIT_BLAST_COOLDOWN = 2.0f;
         private const float SPIRIT_BLAST_FLY_DURATION = 1.0f;    //the time in seconds that the projectile is in air before disappearing
         private const float SPIRIT_BLAST_BASE_DAMAGE = 35.0f;    //base damage of the spell
 

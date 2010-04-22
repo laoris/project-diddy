@@ -92,10 +92,14 @@
     <Compile Include="SpriteCode\NPC\NPCattack.cs" />
     <Compile Include="SpriteCode\NPC\NPCdamageAggro.cs" />
     <Compile Include="SpriteCode\NPC\NPChealthRegen.cs" />
+    <Compile Include="SpriteCode\NPC\NPCloot.cs" />
     <Compile Include="SpriteCode\NPC\NPCspiritRegen.cs" />
+    <Compile Include="SpriteCode\NPC\SquareGuys\SquareGuyPurple.cs" />
+    <Compile Include="SpriteCode\Player\Abilities\PlayerBorrowedSpirit.cs" />
     <Compile Include="SpriteCode\Player\Abilities\PlayerElementalBlast.cs" />
     <Compile Include="SpriteCode\Player\Abilities\PlayerForceWave.cs" />
     <Compile Include="SpriteCode\Player\Abilities\PlayerSpiritBlast.cs" />
+    <Compile Include="SpriteCode\Player\Abilities\PlayerVortex.cs" />
     <Compile Include="SpriteCode\Player\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
